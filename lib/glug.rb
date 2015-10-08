@@ -1,7 +1,7 @@
 require 'json'
 require 'neatjson'
 
-module Glug
+module Glug # :nodoc:
 
 	# -----	Subscriptable
 	#       allows us to create conditions with syntax
@@ -181,8 +181,8 @@ module Glug
 		def on(*args, &block)
 			@child_num+=1
 			r = Layer.new(@stylesheet,
-					:id => "#{@kv[:id]}__#{@child_num}".to_sym,	# automatic layer naming
-					:kv => @kv.dup, :cascades => @cascades.dup)# inherit properties
+					:id => "#{@kv[:id]}__#{@child_num}".to_sym,
+					:kv => @kv.dup, :cascades => @cascades.dup)
 
 			# Set zoom level
 			if args[0].is_a?(Range) || args[0].is_a?(Fixnum)
