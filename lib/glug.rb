@@ -93,7 +93,7 @@ module Glug # :nodoc:
 		def to_hash
 			out = @kv.dup
 			out['sources'] = @sources
-			out['layers'] = @layers.select { |r| r.write? }.collect { |r| r.to_hash }
+			out['layers'] = @layers.select { |r| r.write? }.collect { |r| r.to_hash }.compact
 			out
 		end
 		def to_json(*args); JSON.neat_generate(to_hash) end
@@ -119,7 +119,7 @@ module Glug # :nodoc:
 		def <=(*args); Condition.new.from_key(:<=,@k,args) end
 		def >=(*args); Condition.new.from_key(:>=,@k,args) end
 		def in(*args); Condition.new.from_key(:in,@k,args) end
-		def not_in(*args); Condition.new.from_key(:not_in,@k,args) end
+		def not_in(*args); Condition.new.from_key('!in',@k,args) end
 	end
 
 	# -----	Layer
@@ -306,7 +306,8 @@ module Glug # :nodoc:
 			else
 				stylesheet.refs[mk] = hash['id']
 			end
-			hash
+
+			hash[:layout].empty? && hash[:paint].empty? ? nil : hash
 		end
 
 		# Key to identify matching layer properties (slow but...)
