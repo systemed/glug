@@ -195,9 +195,9 @@ module Glug # :nodoc:
 				sub_cond = @condition						# just inherit parent layer's condition
 			else
 				sub_cond = (args.length==1) ? args[0] : Condition.new.from_list(:any,args)
-				sub_cond = sub_cond & @condition
+				sub_cond = nilsafe_merge(sub_cond, @condition)
 			end
-			r._set_filter(sub_cond & @uncascaded)
+			r._set_filter(nilsafe_merge(sub_cond, @uncascaded))
 			r.instance_eval(&block)
 			@stylesheet._add_layer(r)
 
@@ -206,13 +206,23 @@ module Glug # :nodoc:
 			@cascades.each do |c|
 				c_cond, c_kv = c
 				l = Layer.new(@stylesheet, :id=>"#{r.kv[:id]}__#{child_chr}", :kv=>r.kv.dup)
-				l._set_filter(sub_cond & c_cond)
+				l._set_filter(nilsafe_merge(sub_cond, c_cond))
 				l.kv.merge!(c_kv)
 				@stylesheet._add_layer(l)
 				child_chr.next!
 			end
 		end
 		
+		# Short-form key constructor - for reserved words
+		def tag(k)
+			OSMKey.new(k)
+		end
+
+		# Nil-safe merge
+		def nilsafe_merge(a,b)
+			a.nil? ? b : (a & b)
+		end
+
 		# Add a cascading condition
 		def cascade(*args, &block)
 			cond = (args.length==1) ? args[0] : Condition.new.from_list(:any,args)
@@ -241,7 +251,7 @@ module Glug # :nodoc:
 			_set_filter(args.length==1 ? args[0] : Condition.new.from_list(:any,args))
 		end
 		def _set_filter(condition)
-			@condition = condition.dup
+			@condition = condition.nil? ? nil : condition.dup
 		end
 
 		# Set layer name
