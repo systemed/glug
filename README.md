@@ -13,7 +13,7 @@ version 8
 name "My first stylesheet"
 source :osm_data, :type=>'vector', :url=>'http://my-server.com/osm.tilejson'
  
-layer(:roads, :zoom=>10..13, :source=>osm_data) {
+layer(:roads, :zoom=>10..13, :source=>:osm_data) {
     line_width 6
     line_color 0x888888
     on(highway=='motorway', highway=='motorway_link') { line_color :blue }
@@ -170,7 +170,7 @@ Sublayers can be nested:
 ```ruby
   on(3..6) {
     line_width 2
-    on (highway=='motorway') { line-color :blue }
+    on(highway=='motorway') { line-color :blue }
   }
 ```
 Do not add a space between `on` and the parentheses. If your filter breaks, add more parentheses.
