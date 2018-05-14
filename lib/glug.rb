@@ -92,7 +92,8 @@ module Glug # :nodoc:
 		# Assemble into Mapbox GL JSON format
 		def to_hash
 			out = @kv.dup
-			out['sources'] = @sources
+			out['sources'] = @sources.dup
+			out['sources'].each { |k,v| p k; p v; v.delete(:default); out['sources'][k] = v }
 			out['layers'] = @layers.select { |r| r.write? }.collect { |r| r.to_hash }.compact
 			out
 		end
@@ -301,7 +302,7 @@ module Glug # :nodoc:
 			hash['type'] = @type
 			if @condition then hash['filter'] = @condition.encode end
 
-			# Convert zoom level
+			# Convert zoom level
 			if (v=hash['zoom'])
 				hash['minzoom'] = v.is_a?(Range) ? v.first : v
 				hash['maxzoom'] = v.is_a?(Range) ? v.last  : v
@@ -317,7 +318,13 @@ module Glug # :nodoc:
 				stylesheet.refs[mk] = hash['id']
 			end
 
-			hash[:layout].empty? && hash[:paint].empty? ? nil : hash
+			if hash[:layout].empty? && hash[:paint].empty?
+				nil
+			else
+				hash.delete(:layout) if hash[:layout].empty?
+				hash.delete(:paint) if hash[:paint].empty?
+				hash
+			end
 		end
 
 		# Key to identify matching layer properties (slow but...)
