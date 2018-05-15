@@ -93,7 +93,7 @@ module Glug # :nodoc:
 		def to_hash
 			out = @kv.dup
 			out['sources'] = @sources.dup
-			out['sources'].each { |k,v| p k; p v; v.delete(:default); out['sources'][k] = v }
+			out['sources'].each { |k,v| v.delete(:default); out['sources'][k] = v }
 			out['layers'] = @layers.select { |r| r.write? }.collect { |r| r.to_hash }.compact
 			out
 		end

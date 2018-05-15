@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name        = 'glug'
-  s.version     = '0.0.2'
-  s.date        = '2015-10-06'
+  s.version     = '0.0.5'
+  s.date        = '2018-05-15'
   s.summary     = "Glug"
   s.description = "Text-based markup for Mapbox GL styles"
   s.authors     = ["Richard Fairhurst"]
