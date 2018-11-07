@@ -119,8 +119,8 @@ module Glug # :nodoc:
 		def  >(*args); Condition.new.from_key(:> ,@k,args) end
 		def <=(*args); Condition.new.from_key(:<=,@k,args) end
 		def >=(*args); Condition.new.from_key(:>=,@k,args) end
-		def in(*args); Condition.new.from_key(:in,@k,args) end
-		def not_in(*args); Condition.new.from_key('!in',@k,args) end
+		def in(*args); Condition.new.from_key(:in,@k,args.flatten) end
+		def not_in(*args); Condition.new.from_key('!in',@k,args.flatten) end
 	end
 
 	# -----	Layer
