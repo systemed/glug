@@ -131,8 +131,22 @@ module Glug # :nodoc:
 	class Layer
 
 		# Mapbox GL properties (as distinct from OSM keys)
-		LAYOUT    = [ :visibility, :line_cap, :line_join, :line_miter_limit, :line_round_limit, :symbol_placement, :symbol_spacing, :symbol_avoid_edges, :icon_allow_overlap, :icon_ignore_placement, :icon_optional, :icon_rotation_alignment, :icon_size, :icon_image, :icon_rotate, :icon_padding, :icon_keep_upright, :icon_offset, :text_rotation_alignment, :text_field, :text_font, :text_size, :text_max_width, :text_line_height, :text_letter_spacing, :text_justify, :text_anchor, :text_max_angle, :text_rotate, :text_padding, :text_keep_upright, :text_transform, :text_offset, :text_allow_overlap, :text_ignore_placement, :text_optional ]
-		PAINT     = [ :background_color, :background_pattern, :background_opacity, :fill_antialias, :fill_opacity, :fill_color, :fill_outline_color, :fill_translate, :fill_translate_anchor, :fill_pattern, :line_opacity, :line_color, :line_translate, :line_translate_anchor, :line_width, :line_gap_width, :line_blur, :line_dasharray, :line_pattern, :icon_opacity, :icon_color, :icon_halo_color, :icon_halo_width, :icon_halo_blur, :icon_translate, :icon_translate_anchor, :text_opacity, :text_color, :text_halo_color, :text_halo_width, :text_halo_blur, :text_translate, :text_translate_anchor, :raster_opacity, :raster_hue_rotate, :raster_brightness_min, :raster_brightness_max, :raster_saturation, :raster_contrast, :raster_fade_duration, :circle_radius, :circle_color, :circle_blur, :circle_opacity, :circle_translate, :circle_translate_anchor ]
+		LAYOUT    = [ :visibility,
+		              :line_cap, :line_join, :line_miter_limit, :line_round_limit, 
+		              :symbol_placement, :symbol_spacing, :symbol_avoid_edges,
+		              :icon_allow_overlap, :icon_ignore_placement, :icon_optional, :icon_rotation_alignment, :icon_size,
+		              :icon_image, :icon_rotate, :icon_padding, :icon_keep_upright, :icon_offset, :icon_text_fit, :icon_text_fit_padding,
+		              :text_rotation_alignment, :text_field, :text_font, :text_size, :text_max_width, :text_line_height,
+		              :text_letter_spacing, :text_justify, :text_anchor, :text_max_angle, :text_rotate, :text_padding,
+		              :text_keep_upright, :text_transform, :text_offset, :text_allow_overlap, :text_ignore_placement, :text_optional ]
+		PAINT     = [ :background_color, :background_pattern, :background_opacity,
+		              :fill_antialias, :fill_opacity, :fill_color, :fill_outline_color, :fill_translate, :fill_translate_anchor, :fill_pattern,
+		              :line_opacity, :line_color, :line_translate, :line_translate_anchor, :line_width, :line_gap_width,
+		              :line_blur, :line_dasharray, :line_pattern,
+		              :icon_opacity, :icon_color, :icon_halo_color, :icon_halo_width, :icon_halo_blur, :icon_translate, :icon_translate_anchor,
+		              :text_opacity, :text_color, :text_halo_color, :text_halo_width, :text_halo_blur, :text_translate, :text_translate_anchor,
+		              :raster_opacity, :raster_hue_rotate, :raster_brightness_min, :raster_brightness_max, :raster_saturation, :raster_contrast, :raster_fade_duration,
+		              :circle_radius, :circle_color, :circle_blur, :circle_opacity, :circle_translate, :circle_translate_anchor ]
 		TOP_LEVEL = [ :metadata, :zoom, :interactive ]
 		HIDDEN    = [ :ref, :source, :source_layer, :id, :type, :filter, :layout, :paint ]	# top level, not settable by commands
 
