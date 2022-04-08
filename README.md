@@ -1,8 +1,8 @@
 # Glug
 
-Text-based markup for Mapbox GL.
+Text-based markup for MapLibre and Mapbox GL.
 
-Glug is a compact markup 'language' that compiles to Mapbox GL JSON styles. It's implemented as a Ruby Domain-Specific Language (DSL), with all the flexibility that affords.
+Glug is a compact markup 'language' that compiles to GL JSON styles. It's implemented as a Ruby Domain-Specific Language (DSL), with all the flexibility that affords.
 
 Unlike CartoCSS and MapCSS, Glug does not cascade rules as standard. Cascading can produce a large number of rules, which is bad for mobile performance, and can make styles difficult to manage. Instead, Glug encourages concise styling by nesting layer definitions, with limited cascading as an option.
 
@@ -32,7 +32,7 @@ Run glug from the command line:
 
 `glug my_stylesheet.glug > my_stylesheet.json`
 
-Use glug from Ruby:
+Use Glug from Ruby:
 
 ```ruby
 require 'glug'
@@ -90,9 +90,9 @@ Style properties are defined as you'd expect:
   line_color 0xFF07C3
 ```
 
-Glug will automatically create the 'type' property for you based on the styles you define. Use 'line_width' or 'line_color', and Glug will set 'type' to 'line'. Mapbox GL doesn't allow you to mix different types (e.g. lines and fills) within one layer.
+Glug will automatically create the 'type' property for you based on the styles you define. Use 'line_width' or 'line_color', and Glug will set 'type' to 'line'. GL styles don't allow you to mix different types (e.g. lines and fills) within one layer.
 
-Use underscores in property names where the Mapbox GL spec has a hyphen, so 'line_color' rather than 'line-color'.
+Use underscores in property names where the GL style spec has a hyphen, so 'line_color' rather than 'line-color'.
 
 When defining colours, note that Ruby specifies hex colours like so: `0xC38291`. This means you need to specify all six digits of a hex colour, so `0xCC3388` rather than '#C38'. You can avoid this by supplying a string instead: `"#C38"`.
 
@@ -100,7 +100,7 @@ You can use either symbols (`:blue`) or strings (`"blue"`): both will be written
 
 ### Filtering
 
-Glug wraps Mapbox GL's powerful filtering abilities in a more familiar format, so you can easily make your styles react to tags/attributes. At its simplest, Glug allows you to add a test like this:
+Glug wraps GL styles' powerful filtering abilities in a more familiar format, so you can easily make your styles react to tags/attributes. At its simplest, Glug allows you to add a test like this:
 
 ```ruby
   filter highway=='primary'
@@ -139,6 +139,49 @@ Alternatively, you can also express multiple choices with the `any[]`, `all[]` a
 ```ruby
   filter any[amenity=='pub', tourism=='hotel', amenity=='restaurant']
 ```
+
+## Expressions
+
+GL styles have their own embedded programming language, referred to as [Expressions](https://docs.mapbox.com/mapbox-gl-js/style-spec/expressions/#pitch), which enable you to set property values programmatically. (For example, you could change line width based on the distance from a given point.)
+
+You can build these in Glug with a small dedicated DSL. (Yes – a DSL inside a DSL!) Do this by specifying the property value as a code block in braces:
+
+```ruby
+  circle_color { rgb(_temperature, 0, subtract(100, _temperature)) }
+```
+
+That is, where GL instructions are expressed as an array, you write them as a function name ('rgb') followed by the arguments in parentheses.
+
+As a shorthand for the 'get' operator, which fetches a value from a vector tile feature, you can write the value name prefixed with an underscore. In this example, _temperature is compiled to `[“get”, “temperature”]`.
+
+A more complex example:
+
+```ruby
+  fill_color {
+    let('density', divide(_population,_sqkm)) <<
+    interpolate([:linear], zoom(),
+      8,  interpolate([:linear], var('density'), 274, to_color("#edf8e9"), 1551, to_color("#006d2c")),
+      10, interpolate([:linear], var('density'), 274, to_color("#eff3ff"), 1551, to_color("#08519c"))
+    )
+  }
+```
+
+You can also use expressions as a filter:
+
+```ruby
+  filter { is(modulo(_height,20),0) }
+```
+
+Note the following:
+
+* Some GL operators can’t be expressed directly in our Ruby DSL, either because they’re symbols ('*','+' etc.) or because they’re Ruby reserved words. Use `string_format` (for 'format'), `is_in` (for 'in'), `when_case` (for 'case'), `is` (for '=='), `is_not` (for '!='), `lt,lte,gt,gte` (for '<','<=','>','>='), and `add,subtract,multiply,divide,modulo,power,not`.
+* The expressions DSL transforms underscores in operators to dashes (so `to_color` becomes 'to-color').
+* The expressions DSL doesn’t transform underscores anywhere else, e.g. in parameter keys.
+* The expressions DSL doesn't transform Ruby hex values to colour codes.
+* You may still need to use `literal(1,2,3)` to write an array or object value. (Note that you don’t need square brackets.)
+* To concatentate two operators (often where the first is `let`), you can use << .
+* Expressions work with the `filter` keyword, but not yet with the `on` or `cascade` keywords.
+
 
 ## Layers - advanced options
 
@@ -187,10 +230,10 @@ Sometimes, you may wish to only generate the sublayers, and suppress the partial
   }
 ```
 
-Sublayers have no special meaning to Mapbox GL; they are normal layers like any other. Glug unwraps the 'inherited' properties and creates a layer accordingly. Points to note:
+Sublayers have no special meaning in GL styles; they are normal layers like any other. Glug unwraps the 'inherited' properties and creates a layer accordingly. Points to note:
 
 * Glug names sublayers automatically: the first sublayer of `roads` will be `roads__1`. If you want to give a sublayer an explicit layer id, write `id :minor_roads`.
-* If two layers share a source, filter, zoom levels, type, and certain ('layout') properties, Mapbox GL can optimise drawing by reusing the same definition. Glug does this invisibly so you don't need to specify it in your style.
+* If two layers share a source, filter, zoom levels, type, and certain ('layout') properties, the GL renderer can optimise drawing by reusing the same definition. Glug does this invisibly so you don't need to specify it in your style.
 * Layer ordering follows the order of your stylesheet.
 * Nested zoom levels simply overwrite their 'parents', so a zoom 7 nested within a zoom 3..6 will still render at zoom 7.
 
@@ -246,6 +289,7 @@ You can even use Ruby's lambdas to set a value as a fraction of the previously s
 
 * Glug is in alpha. Things may break.
 * Glug doesn't yet support class-specific paint properties.
+* Glug should allow you to use expressions in `on` and `cascade`.
 * Glug doesn't yet do anything clever with sprite or glyph directives, but maybe it should.
 
 ## Contributing
@@ -256,8 +300,8 @@ Formatting: braces and indents as shown, hard tabs (4sp). (Yes, I know.) Please 
 
 ## Copyright and contact
 
-Richard Fairhurst, 2015. This code is licensed as FTWPL; you may do anything you like with this code and there is no warranty.
+Richard Fairhurst, 2022. This code is licensed as FTWPL; you may do anything you like with this code and there is no warranty.
 
 If you'd like to sponsor development of Glug, you can contact me at richard@systemeD.net.
 
-Check out [tilemaker](https://github.com/systemed/tilemaker) to produce the vector tiles which Mapbox GL consumes.
+Check out [tilemaker](https://github.com/systemed/tilemaker) to produce the vector tiles which MapLibre and Mapbox GL consume.
