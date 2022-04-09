@@ -33,6 +33,19 @@ module Glug # :nodoc:
 		              :hillshade_shadow_color, :hillshade_highlight_color, :hillshade_accent_color ]
 		TOP_LEVEL = [ :metadata, :zoom, :interactive ]
 		HIDDEN    = [ :ref, :source, :source_layer, :id, :type, :filter, :layout, :paint ]	# top level, not settable by commands
+		EXPRESSIONS=[ :array, :boolean, :collator, :string_format, :image, :literal, :number,
+		              :number_format, :object, :string, :to_boolean, :to_color, :to_number, :to_string,
+		              :typeof, :accumulated, :feature_state, :geometry_type, :feature_id,
+		              :line_progress, :properties, :at, :get, :has, :is_in, :index_of,
+		              :length, :slice,
+					  :all, :any, :case_when, :coalesce, :match, :within,
+					  :interpolate, :interpolate_hcl, :interpolate_lab, :step,
+					  :let, :var, :concat, :downcase, :upcase,
+					  :is_supported_script, :resolved_locale,
+					  :rgb, :rgba, :to_rgba, :abs, :acos, :asin, :atan, :ceil, :cos, :distance,
+					  :e, :floor, :ln, :ln2, :log10, :log2, :max, :min, :pi, :round, :sin, :sqrt, :tan,
+					  :distance_from_center, :pitch, :zoom, :heatmap_density,
+					  :subtract, :divide, :_! ]
 
 		# Shared properties that can be recalled by using a 'ref' 
 		REF_PROPERTIES = ['type', 'source', 'source-layer', 'minzoom', 'maxzoom', 'filter', 'layout']
@@ -62,21 +75,33 @@ module Glug # :nodoc:
 		# Handle all missing 'method' calls
 		# If we can match it to a GL property, it's an assignment:
 		# otherwise it's an OSM key
-		def method_missing(method_sym, *arguments, &block)
-			if LAYOUT.include?(method_sym) || PAINT.include?(method_sym) || TOP_LEVEL.include?(method_sym)
+		def method_missing(method_sym, *arguments)
+			if EXPRESSIONS.include?(method_sym)
+				return Condition.new.from_list(method_sym, arguments)
+			elsif LAYOUT.include?(method_sym) || PAINT.include?(method_sym) || TOP_LEVEL.include?(method_sym)
 				v = arguments.length==1 ? arguments[0] : arguments
-				if block_given? then v=Expression.new(block).encode
-				elsif v.is_a?(Proc) then v=v.call(@kv[method_sym]) end
+				if v.is_a?(Proc) then v=v.call(@kv[method_sym]) end
 				if @cascade_cond.nil?
 					@kv[method_sym] = v
 				else
 					_add_cascade_condition(method_sym, v)
 				end
 			else
-				return OSMKey.new(method_sym.to_s)
+				return Condition.new.from_list("get", [method_sym])
 			end
 		end
-		
+
+		# Convenience so we can write literal(1,2,3) rather than literal([1,2,3])
+		def literal(*args)
+			if args.length==1 && args[0].is_a?(Hash)
+				# Hashes - literal(frog: 1, bill: 2)
+				Condition.new.from_list(:literal, [args[0]])
+			else
+				# Arrays - literal(1,2,3)
+				Condition.new.from_list(:literal, [args])
+			end
+		end
+
 		# Return a current value from @kv
 		# This allows us to do: line_width current_value(:line_width)/2.0
 		def current_value(key)
@@ -119,11 +144,6 @@ module Glug # :nodoc:
 			end
 		end
 		
-		# Short-form key constructor - for reserved words
-		def tag(k)
-			OSMKey.new(k)
-		end
-
 		# Nil-safe merge
 		def nilsafe_merge(a,b)
 			a.nil? ? b : (a & b)
@@ -153,12 +173,8 @@ module Glug # :nodoc:
 		end
 
 		# Setters for @condition (making sure we copy when inheriting)
-		def filter(*args,&block)
-			if block_given?
-				@condition = Expression.new(block)
-			else
-				_set_filter(args.length==1 ? args[0] : Condition.new.from_list(:any,args))
-			end
+		def filter(*args)
+			_set_filter(args.length==1 ? args[0] : Condition.new.from_list(:any,args))
 		end
 		def _set_filter(condition)
 			@condition = condition.nil? ? nil : condition.dup
@@ -173,10 +189,9 @@ module Glug # :nodoc:
 		def suppress; @write = false end
 		def write?; @write end
 
-		# Square-bracket filters (any[...], all[...], none[...])
+		# Square-bracket filters (any[...], all[...])
 		def any ; return Subscriptable.new(:any ) end
 		def all ; return Subscriptable.new(:all ) end
-		def none; return Subscriptable.new(:none) end
 
 		# Deduce 'type' attribute from style attributes
 		def set_type_from(s)
@@ -195,6 +210,7 @@ module Glug # :nodoc:
 			@kv.each do |k,v|
 				s = k.to_s.gsub('_','-')
 				if s.include?('-color') && v.is_a?(Fixnum) then v = "#%06x" % v end
+				if v.respond_to?(:encode) then v=v.encode end
 
 				if LAYOUT.include?(k)
 					hash[:layout][s]=v

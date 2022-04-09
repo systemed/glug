@@ -6,14 +6,16 @@ Glug is a compact markup 'language' that compiles to GL JSON styles. It's implem
 
 Unlike CartoCSS and MapCSS, Glug does not cascade rules as standard. Cascading can produce a large number of rules, which is bad for mobile performance, and can make styles difficult to manage. Instead, Glug encourages concise styling by nesting layer definitions, with limited cascading as an option.
 
+Glug is a compiler. You should use it to generate JSON, then serve that JSON with your maps. Don't use Glug on the fly in production.
+
 ## A simple Glug stylesheet
 
 ```ruby
 version 8
 name "My first stylesheet"
-source :osm_data, :type=>'vector', :url=>'http://my-server.com/osm.tilejson'
+source :osm_data, type: 'vector', url: 'http://my-server.com/osm.tilejson'
  
-layer(:roads, :zoom=>10..13, :source=>:osm_data) {
+layer(:roads, zoom: 10..13, source: :osm_data) {
     line_width 6
     line_color 0x888888
     on(highway=='motorway', highway=='motorway_link') { line_color :blue }
@@ -57,11 +59,11 @@ Stylesheet-wide properties are defined simply:
 Sources are defined as hashes, with the source name specified as a symbol:
 
 ```ruby
-  source :mapbox_streets, :type=>'vector',
-    :url=>'mapbox://mapbox.mapbox-streets-v5', :default=>true
+  source :mapbox_streets, type: 'vector',
+         url: 'mapbox://mapbox.mapbox-streets-v5', default: true
 ```
 
-Note the `:default=>true` extension. This registers the source as the default for your style, so you don't have to specify it in every layer.
+Note the `default: true` extension. This registers the source as the default for your style, so you don't have to specify it in every layer.
 
 ## Layers - the basics
 
@@ -72,7 +74,7 @@ Layers are the meat of the styling, where Glug does most of its work.
 You create a layer like this:
 
 ```ruby
-  layer(:water, :zoom=>5..13, :source=>:osm_data) {
+  layer(:water, zoom: 5..13, source: :osm_data) {
     # Style definitions go here...
   }
 ```
@@ -98,9 +100,9 @@ When defining colours, note that Ruby specifies hex colours like so: `0xC38291`.
 
 You can use either symbols (`:blue`) or strings (`"blue"`): both will be written out as strings.
 
-### Filtering
+### Filters and expressions
 
-Glug wraps GL styles' powerful filtering abilities in a more familiar format, so you can easily make your styles react to tags/attributes. At its simplest, Glug allows you to add a test like this:
+Glug wraps GL styles' powerful [expressions](https://docs.mapbox.com/mapbox-gl-js/style-spec/expressions/) in a more familiar format, so you can easily make your styles react to tags/attributes. At its simplest, Glug allows you to add a test like this:
 
 ```ruby
   filter highway=='primary'
@@ -134,60 +136,52 @@ You can combine several such operators, but be liberal with parentheses to make 
 ```ruby
   filter ( (place=='town') & (population>100000) ) | (place=='city')
 ```
-Alternatively, you can also express multiple choices with the `any[]`, `all[]` and `none[]` operators:
+Alternatively, you can also express multiple choices with the `any[]` and `all[]` operators:
 
 ```ruby
   filter any[amenity=='pub', tourism=='hotel', amenity=='restaurant']
 ```
 
-## Expressions
+### Using expressions as properties
 
-GL styles have their own embedded programming language, referred to as [Expressions](https://docs.mapbox.com/mapbox-gl-js/style-spec/expressions/#pitch), which enable you to set property values programmatically. (For example, you could change line width based on the distance from a given point.)
-
-You can build these in Glug with a small dedicated DSL. (Yes – a DSL inside a DSL!) Do this by specifying the property value as a code block in braces:
+You can also use expressions to set GL properties programmatically. For example, to set the colour of a circle based on the 'temperature' tag in the vector tile:
 
 ```ruby
-  circle_color { rgb(_temperature, 0, subtract(100, _temperature)) }
+  circle_color rgb(temperature, 0, temperature/2)
 ```
 
-That is, where GL instructions are expressed as an array, you write them as a function name ('rgb') followed by the arguments in parentheses.
-
-As a shorthand for the 'get' operator, which fetches a value from a vector tile feature, you can write the value name prefixed with an underscore. In this example, _temperature is compiled to `[“get”, “temperature”]`.
+If you're following along with the GL [expressions spec](https://docs.mapbox.com/mapbox-gl-js/style-spec/expressions/), GL JSON operators are expressed as an array, and in Glug we write them as a operator name ('rgb') followed by the arguments in parentheses.
 
 A more complex example:
 
 ```ruby
-  fill_color {
-    let('density', divide(_population,_sqkm)) <<
+  fill_color let('density', population/sqkm) <<
     interpolate([:linear], zoom(),
       8,  interpolate([:linear], var('density'), 274, to_color("#edf8e9"), 1551, to_color("#006d2c")),
       10, interpolate([:linear], var('density'), 274, to_color("#eff3ff"), 1551, to_color("#08519c"))
     )
-  }
 ```
 
-You can also use expressions as a filter:
+Several operators can also be used as dot (postfix) methods. For example, `name.length` will return the length of the name tag; `name.upcase` will return it in upper case; and `in` can be used with a list of values, e.g. `ref.in("M1","M5","M6")`. For the list of operators where this applies, see DOT_METHODS in condition.rb.
 
-```ruby
-  filter { is(modulo(_height,20),0) }
-```
+For these dot methods and for symbol operators (e.g. `+` or `==`), _the left-hand side of the expression must be a tag or an expression_. In other words, `height+50` works, but '50+height' doesn't. Usually you can just write the expression that way round, but if you need to write '100-height', use `subtract(100,height)` (similarly 'divide').
 
 Note the following:
 
-* Some GL operators can’t be expressed directly in our Ruby DSL, either because they’re symbols ('*','+' etc.) or because they’re Ruby reserved words. Use `string_format` (for 'format'), `is_in` (for 'in'), `when_case` (for 'case'), `is` (for '=='), `is_not` (for '!='), `lt,lte,gt,gte` (for '<','<=','>','>='), and `add,subtract,multiply,divide,modulo,power,not`.
-* The expressions DSL transforms underscores in operators to dashes (so `to_color` becomes 'to-color').
-* The expressions DSL doesn’t transform underscores anywhere else, e.g. in parameter keys.
-* The expressions DSL doesn't transform Ruby hex values to colour codes.
-* You may still need to use `literal(1,2,3)` to write an array or object value. (Note that you don’t need square brackets.)
-* To concatentate two operators (often where the first is `let`), you can use << .
-* Expressions work with the `filter` keyword, but not yet with the `on` or `cascade` keywords.
+* You don't need to use the `get` operator - you can just write the tag name, e.g. `temperature`. (You can still use `get` in case of a clash with a reserved word.)
+* For the GL operator 'format', write `string_format` instead; for 'id', write `feature_id`; for 'case', write `case_when`; for the '!' operator, write `_!`. (These are Ruby reserved words or used elsewhere in Glug.)
+* Where a GL operator has a dash, write it with an underscore (e.g. `to_color`).
+* Arrays can be accessed in standard bracketed subscript notation, e.g. `colours[5]` (compiled to 'at' in the GL style).
+* Within colour operators, you'll need to write colours as strings (e.g. "#FF0000") rather than Ruby hex values.
+* To concatenate two operators (often where the first is `let`), use `<<`.
+* You may still need to use `literal(1,2,3)` to write an array or object value.
 
 
-## Layers - advanced options
+## Sublayers and cascading
 
 ### Sublayers
 
-Filters come into their own when defining sublayers.
+Filter expressions come into their own when defining sublayers.
 
 A sublayer inherits all the properties of its parent layer, and adds more, if a test is fulfilled. For example, if you wanted to show all roads 2px wide, but motorways 4px wide:
 
@@ -199,7 +193,7 @@ A sublayer inherits all the properties of its parent layer, and adds more, if a 
   }
 ```
 
-Sublayers are introduced with the `on` instruction, which expects either a zoom range, a filter, or both. The following are all valid:
+Sublayers are introduced with the `on` instruction, which expects either a zoom range, an expression, or both. The following are all valid:
 
 ```ruby
   on(highway=='motorway') { line_width 4 }
@@ -246,7 +240,7 @@ An intentionally limited form of cascading is provided:
     line_width 4
 
     cascade(motor_vehicle=='no') { line_width 2 }
-uncascaded(motor_vehicle!='no')
+    uncascaded(motor_vehicle!='no')
 
     on(highway=='trunk') { line_color :green }
     on(highway=='primary') { line_color :blue }
@@ -289,7 +283,6 @@ You can even use Ruby's lambdas to set a value as a fraction of the previously s
 
 * Glug is in alpha. Things may break.
 * Glug doesn't yet support class-specific paint properties.
-* Glug should allow you to use expressions in `on` and `cascade`.
 * Glug doesn't yet do anything clever with sprite or glyph directives, but maybe it should.
 
 ## Contributing
