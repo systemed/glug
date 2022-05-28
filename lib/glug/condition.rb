@@ -26,7 +26,7 @@ module Glug # :nodoc:
 			is_in: "in",
 			case_when: "case",
 			_!: "!",
-			subtract: "-", divide: "/", # so we can write 'subtract(100,height)'
+			subtract: "-", divide: "/", pow: "^", # so we can write 'subtract(100,height)'
 			feature_id: "id" # Glug already uses 'id'
 		}
 
@@ -51,8 +51,8 @@ module Glug # :nodoc:
 		def  -(*args); Condition.new.from_key(:- , self, args) end
 		def  *(*args); Condition.new.from_key(:* , self, args) end
 		def  /(*args); Condition.new.from_key(:/ , self, args) end
-		def  ^(*args); Condition.new.from_key(:^ , self, args) end
-		def in(*args); Condition.new.from_key(:in, self, [[:literal,args]]) end
+		def **(*args); Condition.new.from_key(:^ , self, args) end
+		def in(*args); Condition.new.from_key(:in, self, [[:literal,args.flatten]]) end
 		def [](*args); Condition.new.from_key(:at, args[0], [self]) end
 
 		def initialize

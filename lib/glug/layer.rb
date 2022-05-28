@@ -45,7 +45,7 @@ module Glug # :nodoc:
 					  :rgb, :rgba, :to_rgba, :abs, :acos, :asin, :atan, :ceil, :cos, :distance,
 					  :e, :floor, :ln, :ln2, :log10, :log2, :max, :min, :pi, :round, :sin, :sqrt, :tan,
 					  :distance_from_center, :pitch, :zoom, :heatmap_density,
-					  :subtract, :divide, :_! ]
+					  :subtract, :divide, :pow, :_! ]
 
 		# Shared properties that can be recalled by using a 'ref' 
 		REF_PROPERTIES = ['type', 'source', 'source-layer', 'minzoom', 'maxzoom', 'filter', 'layout']
@@ -116,7 +116,7 @@ module Glug # :nodoc:
 					:kv => @kv.dup, :cascades => @cascades.dup)
 
 			# Set zoom level
-			if args[0].is_a?(Range) || args[0].is_a?(Fixnum)
+			if args[0].is_a?(Range) || args[0].is_a?(Integer)
 				r.kv[:zoom] = args.shift
 			end
 
@@ -196,7 +196,7 @@ module Glug # :nodoc:
 		# Deduce 'type' attribute from style attributes
 		def set_type_from(s)
 			return unless s.include?('-')
-			t = s.split('-')[0].to_sym
+			t = (s=~/^fill-extrusion/ ? "fill-extrusion" : s.split('-')[0]).to_sym
 			if t==:icon || t==:text then t=:symbol end
 			if @type && @type!=t then raise "Attribute #{s} conflicts with deduced type #{@type} in layer #{@kv[:id]}" end
 			@type=t
@@ -209,7 +209,7 @@ module Glug # :nodoc:
 			# Assign key/values to correct place
 			@kv.each do |k,v|
 				s = k.to_s.gsub('_','-')
-				if s.include?('-color') && v.is_a?(Fixnum) then v = "#%06x" % v end
+				if s.include?('-color') && v.is_a?(Integer) then v = "#%06x" % v end
 				if v.respond_to?(:encode) then v=v.encode end
 
 				if LAYOUT.include?(k)
