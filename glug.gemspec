@@ -10,5 +10,6 @@ Gem::Specification.new do |s|
   s.homepage    = 'http://github.com/systemed/glug'
   s.license     = 'FTWPL'
   s.add_dependency 'neatjson'
+  s.add_dependency 'chroma'
   s.executables << 'glug'
 end
