@@ -4,13 +4,14 @@ module Glug # :nodoc:
 	#       the main document object
 
 	class Stylesheet
-		attr_accessor :sources, :kv, :refs
+		attr_accessor :sources, :kv, :refs, :base_dir
 
-		def initialize(&block)
+		def initialize(base_dir: nil, &block)
 			@sources = {}
 			@kv = {}
 			@layers = []
 			@refs = {}
+			@base_dir = base_dir
 			instance_eval(&block)
 		end
 
@@ -45,6 +46,11 @@ module Glug # :nodoc:
 		# Setter for Layer to add sublayers
 		def _add_layer(layer)
 			@layers << layer
+		end
+		
+		# Load file
+		def include_file(fn)
+			instance_eval(File.read(File.join(@base_dir, fn)))
 		end
 	end
 end
