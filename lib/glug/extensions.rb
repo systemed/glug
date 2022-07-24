@@ -6,4 +6,7 @@ class Integer
 	def chroma(op,p)
 		chroma_hex(op,p).gsub('#','0x').to_i(16)
 	end
+	def to_hex_color
+		'#' + to_s(16).rjust(6,'0')
+	end
 end
