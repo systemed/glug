@@ -4,14 +4,15 @@ module Glug # :nodoc:
 	#       the main document object
 
 	class Stylesheet
-		attr_accessor :sources, :kv, :refs, :base_dir
+		attr_accessor :sources, :kv, :refs, :base_dir, :params
 
-		def initialize(base_dir: nil, &block)
+		def initialize(base_dir: nil, params: nil, &block)
 			@sources = {}
 			@kv = {}
 			@layers = []
 			@refs = {}
 			@base_dir = base_dir
+			@params = params
 			instance_eval(&block)
 		end
 
