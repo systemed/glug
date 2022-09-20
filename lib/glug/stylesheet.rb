@@ -11,7 +11,7 @@ module Glug # :nodoc:
 			@kv = {}
 			@layers = []
 			@refs = {}
-			@base_dir = base_dir
+			@base_dir = base_dir || ''
 			@params = params
 			instance_eval(&block)
 		end
