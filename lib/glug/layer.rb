@@ -68,7 +68,7 @@ module Glug # :nodoc:
 			@uncascaded = nil					# condition to add to non-cascaded layers
 
 			@kv[:source] ||= stylesheet.sources.find {|k,v| v[:default] }[0]
-			@kv[:source_layer] ||= args[:id]
+			@kv[:source_layer] ||= args[:id] if stylesheet.sources[@kv[:source]][:type]=="vector"
 			@child_num = 0				# incremented sublayer suffix
 		end
 
