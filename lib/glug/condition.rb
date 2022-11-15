@@ -54,6 +54,7 @@ module Glug # :nodoc:
 		def **(*args); Condition.new.from_key(:^ , self, args) end
 		def in(*args); Condition.new.from_key(:in, self, [[:literal,args.flatten]]) end
 		def [](*args); Condition.new.from_key(:at, args[0], [self]) end
+		def coerce(other); [Condition.new.just_value(other), self] end
 
 		def initialize
 			@values=[]
@@ -66,6 +67,11 @@ module Glug # :nodoc:
 		def from_list(operator, list)
 			@operator = SUBSTITUTIONS[operator] || operator.to_s.gsub('_','-')
 			@values = list
+			self
+		end
+		def just_value(val)
+			@operator = nil
+			@values = [val]
 			self
 		end
 
@@ -96,7 +102,8 @@ module Glug # :nodoc:
 		# Encode into an array for GL JSON (recursive)
 		def encode
 			transform_underscores
-			[@operator.to_s, *@values.map { |v| v.is_a?(Condition) ? v.encode : v } ]
+			values = @values.map { |v| v.is_a?(Condition) ? v.encode : v }
+			@operator.nil? ? values[0] : [@operator.to_s, *values]
 		end
 		def to_json(opts)
 			encode.to_json(opts)
