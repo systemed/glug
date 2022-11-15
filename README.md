@@ -164,8 +164,6 @@ A more complex example:
 
 Several operators can also be used as dot (postfix) methods. For example, `name.length` will return the length of the name tag; `name.upcase` will return it in upper case; and `in` can be used with a list of values, e.g. `ref.in("M1","M5","M6")`. For the list of operators where this applies, see DOT_METHODS in condition.rb.
 
-For these dot methods and for symbol operators (e.g. `+` or `==`), _the left-hand side of the expression must be a tag or an expression_. In other words, `height+50` works, but '50+height' doesn't. Usually you can just write the expression that way round, but if you need to write '100-height', use `subtract(100,height)` (similarly 'divide').
-
 Note the following:
 
 * You don't need to use the `get` operator - you can just write the tag name, e.g. `temperature`. (You can still use `get` in case of a clash with a reserved word.)
