@@ -4,13 +4,14 @@ module Glug # :nodoc:
 	#       the main document object
 
 	class Stylesheet
-		attr_accessor :sources, :kv, :refs, :base_dir, :params
+		attr_accessor :sources, :kv, :refs, :base_dir, :params, :extensions
 
 		def initialize(base_dir: nil, params: nil, &block)
 			@sources = {}
 			@kv = {}
 			@layers = []
 			@refs = {}
+			@extensions = {}
 			@base_dir = base_dir || ''
 			@params = params || {}
 			instance_eval(&block)
@@ -18,9 +19,14 @@ module Glug # :nodoc:
 
 		# Set a property, e.g. 'bearing 29'
 		def method_missing(method_sym, *arguments)
-			@kv[method_sym] = arguments[0]
+			arg = arguments[0]
+			if arg.is_a?(Proc)
+				@extensions[method_sym] = arg
+			else
+				@kv[method_sym] = arguments[0]
+			end
 		end
-
+		
 		# Add a source 
 		def source(source_name, opts={})
 			@sources[source_name] = opts

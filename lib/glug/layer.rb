@@ -76,8 +76,10 @@ module Glug # :nodoc:
 		# If we can match it to a GL property, it's an assignment:
 		# otherwise it's an OSM key
 		def method_missing(method_sym, *arguments)
-			if EXPRESSIONS.include?(method_sym)
-				return Condition.new.from_list(method_sym, arguments)
+			if @stylesheet.extensions.include?(method_sym)
+				self.instance_exec(*arguments, &@stylesheet.extensions[method_sym])
+			elsif EXPRESSIONS.include?(method_sym)
+				Condition.new.from_list(method_sym, arguments)
 			elsif LAYOUT.include?(method_sym) || PAINT.include?(method_sym) || TOP_LEVEL.include?(method_sym)
 				v = arguments.length==1 ? arguments[0] : arguments
 				if v.is_a?(Proc) then v=v.call(@kv[method_sym]) end
@@ -87,7 +89,7 @@ module Glug # :nodoc:
 					_add_cascade_condition(method_sym, v)
 				end
 			else
-				return Condition.new.from_list("get", [method_sym])
+				Condition.new.from_list("get", [method_sym])
 			end
 		end
 
