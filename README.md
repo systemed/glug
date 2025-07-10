@@ -45,7 +45,7 @@ json = Glug::Stylesheet.new {
 }.to_json
 ```
 
-You should refer to the [Mapbox GL style documentation](https://www.mapbox.com/mapbox-gl-style-spec/) to understand GL styles and their properties. This README only explains how Glug expresses those properties.
+You should refer to the [Maplibre GL style documentation](https://maplibre.org/maplibre-style-spec/) to understand GL styles and their properties. This README only explains how Glug expresses those properties.
 
 ## Stylesheet and sources
 
@@ -102,7 +102,7 @@ You can use either symbols (`:blue`) or strings (`"blue"`): both will be written
 
 ### Filters and expressions
 
-Glug wraps GL styles' powerful [expressions](https://docs.mapbox.com/mapbox-gl-js/style-spec/expressions/) in a more familiar format, so you can easily make your styles react to tags/attributes. At its simplest, Glug allows you to add a test like this:
+Glug wraps GL styles' powerful [expressions](https://maplibre.org/maplibre-style-spec/expressions/) in a more familiar format, so you can easily make your styles react to tags/attributes. At its simplest, Glug allows you to add a test like this:
 
 ```ruby
   filter highway=='primary'
@@ -150,7 +150,7 @@ You can also use expressions to set GL properties programmatically. For example,
   circle_color rgb(temperature, 0, temperature/2)
 ```
 
-If you're following along with the GL [expressions spec](https://docs.mapbox.com/mapbox-gl-js/style-spec/expressions/), GL JSON operators are expressed as an array, and in Glug we write them as a operator name ('rgb') followed by the arguments in parentheses.
+If you're following along with the GL [expressions spec](https://maplibre.org/maplibre-style-spec/expressions/), GL JSON operators are expressed as an array, and in Glug we write them as a operator name ('rgb') followed by the arguments in parentheses.
 
 A more complex example:
 
