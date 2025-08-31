@@ -13,16 +13,16 @@ Glug is a compiler. You should use it to generate JSON, then serve that JSON wit
 ```ruby
 version 8
 name "My first stylesheet"
-source :osm_data, type: 'vector', url: 'http://my-server.com/osm.tilejson'
+source :shortbread, type: 'vector', url: 'https://vector.openstreetmap.org/shortbread_v1/tilejson.json'
  
-layer(:roads, zoom: 10..13, source: :osm_data) {
+layer(:roads, zoom: 10..13, source: :shortbread) {
     line_width 6
-    line_color 0x888888
-    on(highway=='motorway', highway=='motorway_link') { line_color :blue }
-    on(highway=='trunk', highway=='trunk_link') { line_color :green }
-    on(highway=='primary', highway=='primary_link') { line_color :red }
-    on(highway=='secondary') { line_color :orange }
-    on(highway=='residential') { line_width 4 }
+    line_color match(highway,
+        'motorway', :blue,
+        'trunk', :green,
+        'primary', :red,
+        'secondary', :orange,
+        0x888888)
 }
 ```
 
