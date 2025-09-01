@@ -35,6 +35,7 @@ module Glug # :nodoc:
 		              :hillshade_exaggeration, :hillshade_shadow_color, :hillshade_highlight_color, :hillshade_accent_color, :hillshade_method,
 		              :color_relief_opacity, :color_relief_color ]
 		TOP_LEVEL = [ :metadata, :zoom, :interactive ]
+<<<<<<< HEAD
 		HIDDEN    = [ :ref, :source, :source_layer, :id, :type, :filter, :layout, :paint ]	# top level, not settable by commands
 		EXPRESSIONS=[ :let, :var,
 		              :literal, :array, :typeof, :string, :number, :boolean, :object, :collator,
@@ -52,6 +53,37 @@ module Glug # :nodoc:
 		              :is_supported_script, :upcase, :downcase, :concat, :resolved_locale,
 		              # Mapbox GL only
 		              :distance_from_center, :pitch ]
+||||||| parent of 075255c (Stop creating ref layers when layers share properties)
+		HIDDEN    = [ :ref, :source, :source_layer, :id, :type, :filter, :layout, :paint ]	# top level, not settable by commands
+		EXPRESSIONS=[ :array, :boolean, :collator, :string_format, :image, :literal, :number,
+		              :number_format, :object, :string, :to_boolean, :to_color, :to_number, :to_string,
+		              :typeof, :accumulated, :feature_state, :geometry_type, :feature_id,
+		              :line_progress, :properties, :at, :get, :has, :is_in, :index_of,
+		              :length, :slice,
+					  :all, :any, :case_when, :coalesce, :match, :within,
+					  :interpolate, :interpolate_hcl, :interpolate_lab, :step,
+					  :let, :var, :concat, :downcase, :upcase,
+					  :is_supported_script, :resolved_locale,
+					  :rgb, :rgba, :to_rgba, :abs, :acos, :asin, :atan, :ceil, :cos, :distance,
+					  :e, :floor, :ln, :ln2, :log10, :log2, :max, :min, :pi, :round, :sin, :sqrt, :tan,
+					  :distance_from_center, :pitch, :zoom, :heatmap_density,
+					  :subtract, :divide, :pow, :_! ]
+=======
+		HIDDEN    = [ :source, :source_layer, :id, :type, :filter, :layout, :paint ]	# top level, not settable by commands
+		EXPRESSIONS=[ :array, :boolean, :collator, :string_format, :image, :literal, :number,
+		              :number_format, :object, :string, :to_boolean, :to_color, :to_number, :to_string,
+		              :typeof, :accumulated, :feature_state, :geometry_type, :feature_id,
+		              :line_progress, :properties, :at, :get, :has, :is_in, :index_of,
+		              :length, :slice,
+					  :all, :any, :case_when, :coalesce, :match, :within,
+					  :interpolate, :interpolate_hcl, :interpolate_lab, :step,
+					  :let, :var, :concat, :downcase, :upcase,
+					  :is_supported_script, :resolved_locale,
+					  :rgb, :rgba, :to_rgba, :abs, :acos, :asin, :atan, :ceil, :cos, :distance,
+					  :e, :floor, :ln, :ln2, :log10, :log2, :max, :min, :pi, :round, :sin, :sqrt, :tan,
+					  :distance_from_center, :pitch, :zoom, :heatmap_density,
+					  :subtract, :divide, :pow, :_! ]
+>>>>>>> 075255c (Stop creating ref layers when layers share properties)
 
 		# Shared properties that can be recalled by using a 'ref' 
 		REF_PROPERTIES = ['type', 'source', 'source-layer', 'minzoom', 'maxzoom', 'filter', 'layout']
@@ -240,15 +272,6 @@ module Glug # :nodoc:
 				hash.delete('zoom')
 			end
 
-			# See if we can reuse an earlier layer's properties
-			mk = ref_key(hash)
-			if stylesheet.refs[mk]
-				REF_PROPERTIES.each { |k| hash.delete(k) }
-				hash['ref'] = stylesheet.refs[mk]
-			else
-				stylesheet.refs[mk] = hash['id']
-			end
-
 			if hash[:layout].empty? && hash[:paint].empty?
 				nil
 			else
@@ -256,11 +279,6 @@ module Glug # :nodoc:
 				hash.delete(:paint) if hash[:paint].empty?
 				hash
 			end
-		end
-
-		# Key to identify matching layer properties (slow but...)
-		def ref_key(hash)
-			(REF_PROPERTIES.collect { |k| hash[k] } ).to_json
 		end
 
 	end # class Layer
