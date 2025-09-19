@@ -39,22 +39,69 @@ module Glug # :nodoc:
       abs acos asin atan ceil cos floor ln log10 log2 round sin sqrt tan
     ].freeze
 
-    def is(*args) = Condition.new.from_key(:==, self, args)
-    def ==(*args) = Condition.new.from_key(:==, self, args)
-    def !=(*args) = Condition.new.from_key(:!=, self, args)
-    def <(*args) = Condition.new.from_key(:<, self, args)
-    def >(*args) = Condition.new.from_key(:>, self, args)
-    def <=(*args) = Condition.new.from_key(:<=, self, args)
-    def >=(*args) = Condition.new.from_key(:>=, self, args)
-    def %(*args) = Condition.new.from_key(:%, self, args)
-    def +(*args) = Condition.new.from_key(:+, self, args)
-    def -(*args) = Condition.new.from_key(:-, self, args)
-    def *(*args) = Condition.new.from_key(:*, self, args)
-    def /(*args) = Condition.new.from_key(:/, self, args)
-    def **(*args) = Condition.new.from_key(:^, self, args)
-    def in(*args) = Condition.new.from_key(:in, self, [[:literal, args.flatten]])
-    def [](*args) = Condition.new.from_key(:at, args[0], [self])
-    def coerce(other) = [Condition.new.just_value(other), self]
+    def is(*args)
+      Condition.new.from_key(:==, self, args)
+    end
+
+    def ==(*args)
+      Condition.new.from_key(:==, self, args)
+    end
+
+    def !=(*args)
+      Condition.new.from_key(:!=, self, args)
+    end
+
+    def <(*args)
+      Condition.new.from_key(:<, self, args)
+    end
+
+    def >(*args)
+      Condition.new.from_key(:>, self, args)
+    end
+
+    def <=(*args)
+      Condition.new.from_key(:<=, self, args)
+    end
+
+    def >=(*args)
+      Condition.new.from_key(:>=, self, args)
+    end
+
+    def %(*args)
+      Condition.new.from_key(:%, self, args)
+    end
+
+    def +(*args)
+      Condition.new.from_key(:+, self, args)
+    end
+
+    def -(*args)
+      Condition.new.from_key(:-, self, args)
+    end
+
+    def *(*args)
+      Condition.new.from_key(:*, self, args)
+    end
+
+    def /(*args)
+      Condition.new.from_key(:/, self, args)
+    end
+
+    def **(*args)
+      Condition.new.from_key(:^, self, args)
+    end
+
+    def in(*args)
+      Condition.new.from_key(:in, self, [[:literal, args.flatten]])
+    end
+
+    def [](*args)
+      Condition.new.from_key(:at, args[0], [self])
+    end
+
+    def coerce(other)
+      [Condition.new.just_value(other), self]
+    end
 
     def initialize
       @values = []
@@ -78,8 +125,13 @@ module Glug # :nodoc:
       self
     end
 
-    def &(other) = merge(:all, other)
-    def |(other) = merge(:any, other)
+    def &(other)
+      merge(:all, other)
+    end
+
+    def |(other)
+      merge(:any, other)
+    end
 
     def merge(op, cond)
       if cond.nil?

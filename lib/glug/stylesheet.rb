@@ -49,7 +49,9 @@ module Glug
       out
     end
 
-    def to_json(*_args) = JSON.neat_generate(to_hash)
+    def to_json(*_args)
+      JSON.neat_generate(to_hash)
+    end
 
     # Setter for Layer to add sublayers
     def _add_layer(layer)

@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
                    'lib/glug/stylesheet.rb']
   s.homepage    = 'http://github.com/systemed/glug'
   s.license     = 'FTWPL'
-  s.required_ruby_version = '>= 3.2.0'
+  s.required_ruby_version = '>= 2.7.0'
   s.add_dependency 'chroma'
   s.add_dependency 'hsluv'
   s.add_dependency 'neatjson'

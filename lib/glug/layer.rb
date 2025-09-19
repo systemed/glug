@@ -195,8 +195,13 @@ module Glug # :nodoc:
     end
 
     # Suppress output of this layer
-    def suppress = @write = false
-    def write? = @write
+    def suppress
+      @write = false
+    end
+
+    def write?
+      @write
+    end
 
     # Square-bracket filters (any[...], all[...])
     def any
