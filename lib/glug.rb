@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 require 'json'
 require 'neatjson'
 
-module Glug
+module Glug # :nodoc:
 end
 
 require_relative 'glug/condition'
