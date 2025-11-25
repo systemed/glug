@@ -1,5 +1,8 @@
 ---
 inherit_from: .rubocop_todo.yml
 
+AllCops:
+  TargetRubyVersion: 2.7
+
 Naming/MethodParameterName:
   AllowedNames: ['op', 'kv', 'k', 'id']
