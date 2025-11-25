@@ -1,0 +1,24 @@
+name: Rubocop
+on:
+  - push
+  - pull_request
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+env:
+  ruby: '3.5'
+jobs:
+  rubocop:
+    name: RuboCop
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+    - name: Setup ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ env.ruby }}
+        rubygems: 3.4.10
+        bundler-cache: true
+    - name: Run rubocop
+      run: bundle exec rubocop --format fuubar
