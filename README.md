@@ -14,7 +14,7 @@ Glug is a compiler. You should use it to generate JSON, then serve that JSON wit
 version 8
 name "My first stylesheet"
 source :shortbread, type: 'vector', url: 'https://vector.openstreetmap.org/shortbread_v1/tilejson.json'
- 
+
 layer(:roads, zoom: 10..13, source: :shortbread) {
     line_width 6
     line_color match(highway,
@@ -287,7 +287,7 @@ You can even use Ruby's lambdas to set a value as a fraction of the previously s
 
 Bug reports, suggestions and (especially!) pull requests are very welcome on the Github issue tracker. Please check the tracker to see if your issue is already known, and be nice. For questions, please use IRC (irc.oftc.net or http://irc.osm.org, channel #osm-dev) and http://help.osm.org.
 
-Formatting: braces and indents as shown, hard tabs (4sp). (Yes, I know.) Please be conservative about adding dependencies.
+Formatting: Run `bundle exec rubocop` to check formatting. Please be conservative about adding dependencies.
 
 ## Copyright and contact
 
