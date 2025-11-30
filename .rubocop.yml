@@ -9,3 +9,5 @@ AllCops:
 
 Naming/MethodParameterName:
   AllowedNames: ['op', 'kv', 'k', 'id']
+RSpec/MultipleExpectations:
+  Max: 3
