@@ -253,8 +253,12 @@ module Glug # :nodoc:
 
       # Convert zoom level
       if (v = hash['zoom'])
-        hash['minzoom'] = v.is_a?(Range) ? v.first : v
-        hash['maxzoom'] = v.is_a?(Range) ? v.last : v
+        if v.is_a?(Range)
+          hash['minzoom'] = v.first unless v.begin.nil?
+          hash['maxzoom'] = v.last unless v.end.nil?
+        else
+          hash['minzoom'] = hash['maxzoom'] = v
+        end
         hash.delete('zoom')
       end
 

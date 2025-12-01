@@ -81,7 +81,7 @@ You create a layer like this:
 
 The layer call begins with the layer id (`:water`) and then any additional layer-wide properties (source, source_layer, metadata, interactive). If no source is specified, the default will be used. If no source_layer is specified, the layer id will be used - so in this case, Glug would assume a source_layer of 'water'.
 
-Zoom levels are always specified as Ruby ranges (`5..13`) rather than separate minzoom/maxzoom properties.
+Zoom levels are always specified as Ruby ranges (`5..13`) rather than separate minzoom/maxzoom properties. "Beginless" and "Endless" ranges (e.g. `..5` or `13..`) are supported.
 
 ### Style definitions
 
