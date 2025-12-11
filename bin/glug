@@ -3,4 +3,4 @@
 
 require 'glug'
 
-puts Glug::Stylesheet.new { instance_eval(File.read(ARGV[0])) }.to_json
+puts Glug::Stylesheet.new(base_dir: File.dirname(ARGV[0])) { instance_eval(File.read(ARGV[0])) }.to_json
