@@ -108,13 +108,13 @@ module Glug # :nodoc:
     end
 
     def from_key(operator, key, list)
-      @operator = SUBSTITUTIONS[operator] || operator.to_s.gsub('_', '-')
+      @operator = SUBSTITUTIONS[operator] || operator.to_s.tr('_', '-')
       @values = [key].concat(list)
       self
     end
 
     def from_list(operator, list)
-      @operator = SUBSTITUTIONS[operator] || operator.to_s.gsub('_', '-')
+      @operator = SUBSTITUTIONS[operator] || operator.to_s.tr('_', '-')
       @values = list
       self
     end
@@ -183,7 +183,7 @@ module Glug # :nodoc:
       @values.map! do |v|
         if v.is_a?(Hash)
           new_hash = {}
-          v.each { |hk, hv| new_hash[hk.is_a?(Symbol) ? hk.to_s.gsub('_', '-') : hk] = hv }
+          v.each { |hk, hv| new_hash[hk.is_a?(Symbol) ? hk.to_s.tr('_', '-') : hk] = hv }
           new_hash
         else
           v

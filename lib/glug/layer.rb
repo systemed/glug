@@ -216,7 +216,7 @@ module Glug # :nodoc:
     def set_type_from(property)
       return unless property.include?('-')
 
-      new_type = (property =~ /^fill-extrusion/ ? 'fill-extrusion' : property.split('-')[0]).to_sym
+      new_type = (/^fill-extrusion/.match?(property) ? 'fill-extrusion' : property.split('-')[0]).to_sym
       new_type = :symbol if %i[icon text].include?(new_type)
       if @type && @type != new_type
         raise "Attribute #{property} conflicts with deduced type #{@type} in layer #{@kv[:id]}"
@@ -231,7 +231,7 @@ module Glug # :nodoc:
 
       # Assign key/values to correct place
       @kv.each do |k, v|
-        s = k.to_s.gsub('_', '-')
+        s = k.to_s.tr('_', '-')
         v = '#%06x' % v if s.include?('-color') && v.is_a?(Integer)
         v = v.encode if v.respond_to?(:encode)
 
