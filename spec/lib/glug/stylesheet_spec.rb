@@ -65,4 +65,26 @@ describe Glug::Stylesheet do
     DOC
     .strip)
   end
+
+  context 'with fixtures' do
+    let!(:fixture_dir) { File.join(File.dirname(__FILE__), '../../fixtures/') }
+
+    it 'reads a basic file' do
+      glug = File.read(File.join(fixture_dir, 'basic.glug'))
+      stylesheet = described_class.new(base_dir: fixture_dir) do
+        instance_eval(glug)
+      end
+      output = File.read(File.join(fixture_dir, 'basic.json'))
+      expect(stylesheet.to_json).to eql(output.strip)
+    end
+
+    it 'handles include_file method calls' do
+      glug = File.read(File.join(fixture_dir, 'basic_with_include.glug'))
+      stylesheet = described_class.new(base_dir: fixture_dir) do
+        instance_eval(glug)
+      end
+      output = File.read(File.join(fixture_dir, 'basic_with_include.json'))
+      expect(stylesheet.to_json).to eql(output.strip)
+    end
+  end
 end
