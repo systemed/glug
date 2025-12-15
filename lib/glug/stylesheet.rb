@@ -11,16 +11,12 @@ module Glug
       @layers = []
       @base_dir = base_dir || ''
       @params = params || {}
-      instance_eval(&block)
-    end
-
-    # Arbitrary properties can be defined, e.g. "foo :bar" results in a top-level "foo":"bar" in the style
-    def respond_to_missing?(*)
-      true
+      @dsl = StylesheetDSL.new(self)
+      @dsl.instance_eval(&block)
     end
 
     # Set a property, e.g. 'bearing 29'
-    def method_missing(method_sym, *args)
+    def add_property(method_sym, *args)
       @kv[method_sym] = args[0]
     end
 
@@ -60,7 +56,7 @@ module Glug
 
     # Load file
     def include_file(filename)
-      instance_eval(File.read(File.join(@base_dir, filename)))
+      @dsl.instance_eval(File.read(File.join(@base_dir, filename)))
     end
   end
 end
