@@ -1,0 +1,9 @@
+layer(:roads, zoom: 10..13, source: :shortbread) do
+  line_width 6
+  line_color match(highway,
+                   'motorway', :blue,
+                   'trunk', :green,
+                   'primary', :red,
+                   'secondary', :orange,
+                   0x888888)
+end

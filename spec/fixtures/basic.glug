@@ -1,0 +1,13 @@
+version 8
+name 'My first stylesheet'
+source :shortbread, type: 'vector', url: 'https://vector.openstreetmap.org/shortbread_v1/tilejson.json'
+
+layer(:roads, zoom: 10..13, source: :shortbread) do
+  line_width 6
+  line_color match(highway,
+                   'motorway', :blue,
+                   'trunk', :green,
+                   'primary', :red,
+                   'secondary', :orange,
+                   0x888888)
+end
