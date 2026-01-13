@@ -1,0 +1,4 @@
+layer(:roads, zoom: 10..13, source: :shortbread) do
+  line_width @width
+  line_color 0x888888
+end
