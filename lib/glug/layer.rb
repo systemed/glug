@@ -82,7 +82,23 @@ module Glug # :nodoc:
     end
 
     def dsl_eval(&block)
+      # Copy ivars from stylesheet DSL to layer DSL (before eval)
+      style_dsl = @stylesheet.dsl
+      style_dsl.instance_variables.each do |ivar|
+        next if ivar.to_s.start_with?('@__') # skip internal ivars
+
+        @dsl.instance_variable_set(ivar, style_dsl.instance_variable_get(ivar))
+      end
+
+      # Run the layer evaluation
       @dsl.instance_eval(&block)
+
+      # Copy ivars back to stylesheet DSL (after eval)
+      @dsl.instance_variables.each do |ivar|
+        next if ivar.to_s.start_with?('@__') # skip internal ivars
+
+        style_dsl.instance_variable_set(ivar, @dsl.instance_variable_get(ivar))
+      end
     end
 
     # Handle all missing 'method' calls

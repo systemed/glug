@@ -3,7 +3,7 @@
 module Glug
   # the main document object
   class Stylesheet
-    attr_accessor :sources, :kv, :base_dir, :params
+    attr_accessor :sources, :kv, :base_dir, :params, :dsl
 
     def initialize(base_dir: nil, params: nil, &block)
       @sources = {}
