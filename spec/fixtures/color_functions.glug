@@ -17,3 +17,19 @@ end
 layer(:lightenp, source: :shortbread) do
   line_color 0x998877.chroma(:lightenp, 20)
 end
+
+layer(:saturate, source: :shortbread) do
+  line_color 0x998877.chroma(:saturate, 20)
+end
+
+layer(:saturatep, source: :shortbread) do
+  line_color 0x998877.chroma(:saturatep, 20)
+end
+
+layer(:desaturate, source: :shortbread) do
+  line_color 0x998877.chroma(:desaturate, 20)
+end
+
+layer(:desaturatep, source: :shortbread) do
+  line_color 0x998877.chroma(:desaturatep, 20)
+end
