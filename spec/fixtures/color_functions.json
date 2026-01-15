@@ -35,6 +35,34 @@
       "id":"lightenp",
       "source-layer":"lightenp",
       "type":"line"
+    },
+    {
+      "paint":{"line-color":"#b1885f"},
+      "source":"shortbread",
+      "id":"saturate",
+      "source-layer":"saturate",
+      "type":"line"
+    },
+    {
+      "paint":{"line-color":"#a28665"},
+      "source":"shortbread",
+      "id":"saturatep",
+      "source-layer":"saturatep",
+      "type":"line"
+    },
+    {
+      "paint":{"line-color":"#888888"},
+      "source":"shortbread",
+      "id":"desaturate",
+      "source-layer":"desaturate",
+      "type":"line"
+    },
+    {
+      "paint":{"line-color":"#8e8a87"},
+      "source":"shortbread",
+      "id":"desaturatep",
+      "source-layer":"desaturatep",
+      "type":"line"
     }
   ]
 }
