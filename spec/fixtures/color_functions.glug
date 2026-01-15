@@ -1,0 +1,19 @@
+version 8
+name 'My first stylesheet'
+source :shortbread, type: 'vector', url: 'https://vector.openstreetmap.org/shortbread_v1/tilejson.json'
+
+layer(:darken, source: :shortbread) do
+  line_color 0x998877.chroma(:darken, 20)
+end
+
+layer(:darkenp, source: :shortbread) do
+  line_color 0x998877.chroma(:darkenp, 20)
+end
+
+layer(:lighten, source: :shortbread) do
+  line_color 0x998877.chroma(:lighten, 20)
+end
+
+layer(:lightenp, source: :shortbread) do
+  line_color 0x998877.chroma(:lightenp, 20)
+end
