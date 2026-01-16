@@ -47,5 +47,25 @@ module Chroma
       rgb_values = Hsluv.rgb_prepare(Hsluv.hsluv_to_rgb(new_h, s, l))
       Chroma.paint("rgb(#{rgb_values[0]}, #{rgb_values[1]}, #{rgb_values[2]})")
     end
+
+    def mixp(other, weight = 50)
+      other = other.paint if other.is_a?(String)
+      p = weight / 100.0
+
+      h1, s1, l1 = Hsluv.rgb_to_hsluv(rgb.r / 255.0, rgb.g / 255.0, rgb.b / 255.0)
+      h2, s2, l2 = Hsluv.rgb_to_hsluv(other.rgb.r / 255.0, other.rgb.g / 255.0, other.rgb.b / 255.0)
+
+      # Interpolate hue on the shortest path around the color wheel
+      h_diff = h2 - h1
+      h_diff -= 360 if h_diff > 180
+      h_diff += 360 if h_diff < -180
+      new_h = (h1 + h_diff * (1 - p)) % 360
+
+      new_s = s1 * p + s2 * (1 - p)
+      new_l = l1 * p + l2 * (1 - p)
+
+      rgb_values = Hsluv.rgb_prepare(Hsluv.hsluv_to_rgb(new_h, new_s, new_l))
+      Chroma.paint("rgb(#{rgb_values[0]}, #{rgb_values[1]}, #{rgb_values[2]})")
+    end
   end
 end
