@@ -63,6 +63,20 @@
       "id":"desaturatep",
       "source-layer":"desaturatep",
       "type":"line"
+    },
+    {
+      "paint":{"line-color":"#888888"},
+      "source":"shortbread",
+      "id":"greyscale",
+      "source-layer":"greyscale",
+      "type":"line"
+    },
+    {
+      "paint":{"line-color":"#8b8b8b"},
+      "source":"shortbread",
+      "id":"greyscalep",
+      "source-layer":"greyscalep",
+      "type":"line"
     }
   ]
 }
