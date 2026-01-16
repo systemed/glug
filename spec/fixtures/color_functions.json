@@ -77,6 +77,20 @@
       "id":"greyscalep",
       "source-layer":"greyscalep",
       "type":"line"
+    },
+    {
+      "paint":{"line-color":"#999377"},
+      "source":"shortbread",
+      "id":"spin",
+      "source-layer":"spin",
+      "type":"line"
+    },
+    {
+      "paint":{"line-color":"#918b77"},
+      "source":"shortbread",
+      "id":"spinp",
+      "source-layer":"spinp",
+      "type":"line"
     }
   ]
 }
