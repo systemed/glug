@@ -33,3 +33,11 @@ end
 layer(:desaturatep, source: :shortbread) do
   line_color 0x998877.chroma(:desaturatep, 20)
 end
+
+layer(:greyscale, source: :shortbread) do
+  line_color 0x998877.chroma(:greyscale)
+end
+
+layer(:greyscalep, source: :shortbread) do
+  line_color 0x998877.chroma(:greyscalep)
+end

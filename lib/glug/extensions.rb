@@ -6,11 +6,12 @@ require 'hsluv'
 # Colour methods on Integer
 class Integer
   # rubocop:disable Style/StringConcatenation, Naming/MethodParameterName
-  def chroma_hex(op, p)
-    ('#' + to_s(16).rjust(6, '0')).paint.send(op, p).to_hex
+  def chroma_hex(op, p = nil)
+    color = ('#' + to_s(16).rjust(6, '0')).paint
+    (p.nil? ? color.send(op) : color.send(op, p)).to_hex
   end
 
-  def chroma(op, p)
+  def chroma(op, p = nil)
     chroma_hex(op, p).gsub('#', '0x').to_i(16)
   end
 
