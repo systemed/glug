@@ -91,6 +91,20 @@
       "id":"spinp",
       "source-layer":"spinp",
       "type":"line"
+    },
+    {
+      "paint":{"line-color":"#ccc4bb"},
+      "source":"shortbread",
+      "id":"mix",
+      "source-layer":"mix",
+      "type":"line"
+    },
+    {
+      "paint":{"line-color":"#cdc1be"},
+      "source":"shortbread",
+      "id":"mixp",
+      "source-layer":"mixp",
+      "type":"line"
     }
   ]
 }

@@ -49,3 +49,11 @@ end
 layer(:spinp, source: :shortbread) do
   line_color 0x998877.chroma(:spinp, 20)
 end
+
+layer(:mix, source: :shortbread) do
+  line_color 0x998877.chroma(:mix, '#ffffff', 50)
+end
+
+layer(:mixp, source: :shortbread) do
+  line_color 0x998877.chroma(:mixp, '#ffffff', 50)
+end
