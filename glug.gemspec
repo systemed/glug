@@ -8,8 +8,7 @@ Gem::Specification.new do |s|
   s.description = 'Text-based markup for Mapbox GL styles'
   s.authors     = ['Richard Fairhurst']
   s.email       = 'richard@systemeD.net'
-  s.files       = ['lib/glug.rb', 'lib/glug/condition.rb', 'lib/glug/extensions.rb', 'lib/glug/layer.rb',
-                   'lib/glug/stylesheet.rb']
+  s.files       = Dir['README.md', 'lib/**/*']
   s.homepage    = 'http://github.com/systemed/glug'
   s.license     = 'FTWPL'
   s.required_ruby_version = '>= 2.7.0'
