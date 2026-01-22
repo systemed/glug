@@ -66,7 +66,7 @@ module Chroma
 
     def from_hsluv(h, s, l) # rubocop:disable Naming/MethodParameterName
       rgb_values = Hsluv.rgb_prepare(Hsluv.hsluv_to_rgb(h, s, l))
-      Chroma.paint("rgb(#{rgb_values[0]}, #{rgb_values[1]}, #{rgb_values[2]})")
+      Chroma.paint(+"rgb(#{rgb_values[0]}, #{rgb_values[1]}, #{rgb_values[2]})")
     end
   end
 end
