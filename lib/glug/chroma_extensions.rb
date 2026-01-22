@@ -13,7 +13,7 @@ module Chroma
       g = (rgb.g * p + other.rgb.g * (1 - p)).round
       b = (rgb.b * p + other.rgb.b * (1 - p)).round
 
-      Chroma.paint("rgb(#{r}, #{g}, #{b})")
+      Chroma.paint(+"rgb(#{r}, #{g}, #{b})")
     end
   end
 end
