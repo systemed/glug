@@ -1,0 +1,8 @@
+version 8
+name 'My first stylesheet'
+source :shortbread, type: 'vector', url: 'https://vector.openstreetmap.org/shortbread_v1/tilejson.json'
+
+# set at stylesheet level
+@width = 6
+
+include_file 'ivars_with_include_sub.glug'
