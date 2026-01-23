@@ -86,5 +86,14 @@ describe Glug::Stylesheet do
       output = File.read(File.join(fixture_dir, 'basic_with_include.json'))
       expect(stylesheet.to_json).to eql(output.strip)
     end
+
+    it 'handles color functions' do
+      glug = File.read(File.join(fixture_dir, 'color_functions.glug'))
+      stylesheet = described_class.new(base_dir: fixture_dir) do
+        instance_eval(glug)
+      end
+      output = File.read(File.join(fixture_dir, 'color_functions.json'))
+      expect(stylesheet.to_json).to eql(output.strip)
+    end
   end
 end
