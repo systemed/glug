@@ -30,7 +30,7 @@ module Glug
     def layer(id, opts = {}, &block)
       r = Layer.new(self, id: id, kv: opts)
       @layers << r
-      r.instance_eval(&block)
+      r.dsl_eval(&block)
     end
 
     # Assemble into GL JSON format

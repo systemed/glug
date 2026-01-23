@@ -7,7 +7,7 @@ describe Glug::Layer do
         source :osm_data, type: 'vector', url: 'http://example.com/osm.tilejson', default: true
       end
       l = described_class.new(stylesheet, { zoom: 7 })
-      l.line_width 1
+      l.add_property(:line_width, 1)
 
       h = l.to_hash
       expect(h['minzoom']).to be(7)
@@ -19,7 +19,7 @@ describe Glug::Layer do
         source :osm_data, type: 'vector', url: 'http://example.com/osm.tilejson', default: true
       end
       l = described_class.new(stylesheet, { zoom: 1..5 })
-      l.line_width 1
+      l.add_property(:line_width, 1)
 
       h = l.to_hash
       expect(h['minzoom']).to be(1)
@@ -32,7 +32,7 @@ describe Glug::Layer do
           source :osm_data, type: 'vector', url: 'http://example.com/osm.tilejson', default: true
         end
         l = described_class.new(stylesheet, { zoom: 1.. })
-        l.line_width 1
+        l.add_property(:line_width, 1)
 
         h = l.to_hash
         expect(h).to have_key('minzoom')
@@ -45,7 +45,7 @@ describe Glug::Layer do
           source :osm_data, type: 'vector', url: 'http://example.com/osm.tilejson', default: true
         end
         l = described_class.new(stylesheet, { zoom: ..5 })
-        l.line_width 1
+        l.add_property(:line_width, 1)
 
         h = l.to_hash
         expect(h).not_to have_key('minzoom')

@@ -78,12 +78,17 @@ module Glug # :nodoc:
       @kv[:source] ||= stylesheet.sources.find { |_k, v| v[:default] }[0]
       @kv[:source_layer] ||= args[:id] if stylesheet.sources[@kv[:source]][:type] == 'vector'
       @child_num = 0	# incremented sublayer suffix
+      @dsl = LayerDSL.new(self)
+    end
+
+    def dsl_eval(&block)
+      @dsl.instance_eval(&block)
     end
 
     # Handle all missing 'method' calls
     # If we can match it to a GL property, it's an assignment:
     # otherwise it's an OSM key
-    def method_missing(method_sym, *arguments)
+    def add_property(method_sym, *arguments)
       if EXPRESSIONS.include?(method_sym)
         Condition.new.from_list(method_sym, arguments)
       elsif LAYOUT.include?(method_sym) || PAINT.include?(method_sym) || TOP_LEVEL.include?(method_sym)
@@ -135,7 +140,7 @@ module Glug # :nodoc:
         sub_cond = nilsafe_merge(sub_cond, @condition)
       end
       r._set_filter(nilsafe_merge(sub_cond, @uncascaded))
-      r.instance_eval(&block)
+      r.dsl_eval(&block)
       @stylesheet._add_layer(r)
 
       # Create cascaded layers
@@ -159,7 +164,7 @@ module Glug # :nodoc:
     def cascade(*args, &block)
       cond = args.length == 1 ? args[0] : Condition.new.from_list(:any, args)
       @cascade_cond = cond
-      instance_eval(&block)
+      dsl_eval(&block)
       @cascade_cond = nil
     end
 
