@@ -26,7 +26,11 @@ module Glug
 
     # Set a property, e.g. 'bearing 29'
     def method_missing(method_sym, *args)
-      @__impl.add_property(method_sym, *args)
+      if Layer::EXPRESSIONS.include?(method_sym)
+        Condition.new.from_list(method_sym, args)
+      else
+        @__impl.add_property(method_sym, *args)
+      end
     end
   end
 end
