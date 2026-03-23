@@ -1,0 +1,23 @@
+version 8
+name 'My first stylesheet'
+source :shortbread, type: 'vector', url: 'https://vector.openstreetmap.org/shortbread_v1/tilejson.json'
+
+# set at stylesheet level
+@width = 6
+
+layer(:roads, zoom: 10..13, source: :shortbread) do
+  # get at layer level
+  line_width @width
+  line_color 0x888888
+end
+
+layer(:water, source: :shortbread) do
+  # set at layer level
+  @water = 'blue'
+  fill_color @water
+end
+
+layer(:water_line, source: :shortbread) do
+  # get from other layer
+  fill_color @water
+end

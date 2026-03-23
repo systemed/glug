@@ -1,0 +1,12 @@
+version 8
+name 'Expression ivars test'
+source :shortbread, type: 'vector', url: 'https://vector.openstreetmap.org/shortbread_v1/tilejson.json'
+
+# Expression assigned to ivar at stylesheet level
+@my_halo = rgba(255, 255, 255, 0.8)
+@my_color = rgb(100, 200, 50)
+
+layer(:labels, zoom: 5.., source: :shortbread) do
+  text_halo_color @my_halo
+  text_color @my_color
+end

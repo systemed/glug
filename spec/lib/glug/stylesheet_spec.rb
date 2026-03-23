@@ -86,5 +86,32 @@ describe Glug::Stylesheet do
       output = File.read(File.join(fixture_dir, 'basic_with_include.json'))
       expect(stylesheet.to_json).to eql(output.strip)
     end
+
+    it 'sets and gets instance variables across the whole stylesheet' do
+      glug = File.read(File.join(fixture_dir, 'ivars.glug'))
+      stylesheet = described_class.new(base_dir: fixture_dir) do
+        instance_eval(glug)
+      end
+      output = File.read(File.join(fixture_dir, 'ivars.json'))
+      expect(stylesheet.to_json).to eql(output.strip)
+    end
+
+    it 'sets and gets instance variables across included stylesheets' do
+      glug = File.read(File.join(fixture_dir, 'ivars_with_include.glug'))
+      stylesheet = described_class.new(base_dir: fixture_dir) do
+        instance_eval(glug)
+      end
+      output = File.read(File.join(fixture_dir, 'ivars_with_include.json'))
+      expect(stylesheet.to_json).to eql(output.strip)
+    end
+
+    it 'stores expressions in ivars at stylesheet level' do
+      glug = File.read(File.join(fixture_dir, 'expression_ivars.glug'))
+      stylesheet = described_class.new(base_dir: fixture_dir) do
+        instance_eval(glug)
+      end
+      output = File.read(File.join(fixture_dir, 'expression_ivars.json'))
+      expect(stylesheet.to_json).to eql(output.strip)
+    end
   end
 end
