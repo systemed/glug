@@ -113,5 +113,41 @@ describe Glug::Stylesheet do
       output = File.read(File.join(fixture_dir, 'expression_ivars.json'))
       expect(stylesheet.to_json).to eql(output.strip)
     end
+
+    it 'handles explicit layer ordering' do
+      glug = File.read(File.join(fixture_dir, 'layer_ordering.glug'))
+      stylesheet = described_class.new(base_dir: fixture_dir) do
+        instance_eval(glug)
+      end
+      output = File.read(File.join(fixture_dir, 'layer_ordering.json'))
+      expect(stylesheet.to_json).to eql(output.strip)
+    end
+
+    it 'includes sublayers automatically when parent is in layer_order' do
+      glug = File.read(File.join(fixture_dir, 'layer_ordering_sublayers.glug'))
+      stylesheet = described_class.new(base_dir: fixture_dir) do
+        instance_eval(glug)
+      end
+      output = File.read(File.join(fixture_dir, 'layer_ordering_sublayers.json'))
+      expect(stylesheet.to_json).to eql(output.strip)
+    end
+
+    it 'excludes other sublayers when one is explicitly in layer_order' do
+      glug = File.read(File.join(fixture_dir, 'layer_ordering_sublayers_explicit.glug'))
+      stylesheet = described_class.new(base_dir: fixture_dir) do
+        instance_eval(glug)
+      end
+      output = File.read(File.join(fixture_dir, 'layer_ordering_sublayers_explicit.json'))
+      expect(stylesheet.to_json).to eql(output.strip)
+    end
+
+    it 'excludes other sublayers when one other is mentioned and parent included' do
+      glug = File.read(File.join(fixture_dir, 'layer_ordering_sublayers_with_parent.glug'))
+      stylesheet = described_class.new(base_dir: fixture_dir) do
+        instance_eval(glug)
+      end
+      output = File.read(File.join(fixture_dir, 'layer_ordering_sublayers_with_parent.json'))
+      expect(stylesheet.to_json).to eql(output.strip)
+    end
   end
 end

@@ -1,0 +1,31 @@
+{
+  "version":8,
+  "sources":{"shortbread":{"type":"vector","url":"https://example.com/tiles.json"}},
+  "layers":[
+    {
+      "paint":{"line-color":"#998877"},
+      "source":"shortbread",
+      "id":"roads",
+      "source-layer":"roads",
+      "type":"line"
+    },
+    {
+      "paint":{"line-color":"#998877","line-width":2},
+      "source":"shortbread",
+      "id":"roads__1",
+      "source-layer":"roads",
+      "type":"line",
+      "minzoom":5,
+      "maxzoom":10
+    },
+    {
+      "paint":{"line-color":"#998877","line-width":4},
+      "source":"shortbread",
+      "id":"roads__2",
+      "source-layer":"roads",
+      "type":"line",
+      "minzoom":10,
+      "maxzoom":15
+    }
+  ]
+}
