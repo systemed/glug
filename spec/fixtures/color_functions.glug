@@ -1,0 +1,59 @@
+version 8
+name 'My first stylesheet'
+source :shortbread, type: 'vector', url: 'https://vector.openstreetmap.org/shortbread_v1/tilejson.json'
+
+layer(:darken, source: :shortbread) do
+  line_color 0x998877.chroma(:darken, 20)
+end
+
+layer(:darkenp, source: :shortbread) do
+  line_color 0x998877.chroma(:darkenp, 20)
+end
+
+layer(:lighten, source: :shortbread) do
+  line_color 0x998877.chroma(:lighten, 20)
+end
+
+layer(:lightenp, source: :shortbread) do
+  line_color 0x998877.chroma(:lightenp, 20)
+end
+
+layer(:saturate, source: :shortbread) do
+  line_color 0x998877.chroma(:saturate, 20)
+end
+
+layer(:saturatep, source: :shortbread) do
+  line_color 0x998877.chroma(:saturatep, 20)
+end
+
+layer(:desaturate, source: :shortbread) do
+  line_color 0x998877.chroma(:desaturate, 20)
+end
+
+layer(:desaturatep, source: :shortbread) do
+  line_color 0x998877.chroma(:desaturatep, 20)
+end
+
+layer(:greyscale, source: :shortbread) do
+  line_color 0x998877.chroma(:greyscale)
+end
+
+layer(:greyscalep, source: :shortbread) do
+  line_color 0x998877.chroma(:greyscalep)
+end
+
+layer(:spin, source: :shortbread) do
+  line_color 0x998877.chroma(:spin, 20)
+end
+
+layer(:spinp, source: :shortbread) do
+  line_color 0x998877.chroma(:spinp, 20)
+end
+
+layer(:mix, source: :shortbread) do
+  line_color 0x998877.chroma(:mix, '#ffffff', 50)
+end
+
+layer(:mixp, source: :shortbread) do
+  line_color 0x998877.chroma(:mixp, '#ffffff', 50)
+end
