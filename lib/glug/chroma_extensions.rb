@@ -6,6 +6,7 @@ require 'hsluv'
 module Chroma
   class Color # :nodoc:
     def mix(other, weight = 50)
+      other = other.to_hex_color if other.is_a?(Integer)
       other = other.paint if other.is_a?(String)
       p = weight / 100.0
 

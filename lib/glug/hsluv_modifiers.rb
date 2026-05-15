@@ -43,6 +43,7 @@ module Chroma
     end
 
     def mixp(other, weight = 50)
+      other = other.to_hex_color if other.is_a?(Integer)
       other = other.paint if other.is_a?(String)
       p = weight / 100.0
 

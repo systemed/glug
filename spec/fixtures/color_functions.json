@@ -105,6 +105,20 @@
       "id":"mixp",
       "source-layer":"mixp",
       "type":"line"
+    },
+    {
+      "paint":{"line-color":"#ccc4bb"},
+      "source":"shortbread",
+      "id":"mix_int",
+      "source-layer":"mix_int",
+      "type":"line"
+    },
+    {
+      "paint":{"line-color":"#cdc1be"},
+      "source":"shortbread",
+      "id":"mixp_int",
+      "source-layer":"mixp_int",
+      "type":"line"
     }
   ]
 }
