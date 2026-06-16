@@ -5,19 +5,20 @@ require 'hsluv'
 
 # Colour methods on Integer
 class Integer
-  # rubocop:disable Style/StringConcatenation, Naming/MethodParameterName
-  def chroma_hex(op, p)
-    ('#' + to_s(16).rjust(6, '0')).paint.send(op, p).to_hex
+  # rubocop:disable Style/StringConcatenation
+  def chroma_hex(op, *args)
+    color = ('#' + to_s(16).rjust(6, '0')).paint
+    color.send(op, *args).to_hex
   end
 
-  def chroma(op, p)
-    chroma_hex(op, p).gsub('#', '0x').to_i(16)
+  def chroma(op, *args)
+    chroma_hex(op, *args).gsub('#', '0x').to_i(16)
   end
 
   def to_hex_color
     '#' + to_s(16).rjust(6, '0')
   end
-  # rubocop:enable Style/StringConcatenation, Naming/MethodParameterName
+  # rubocop:enable Style/StringConcatenation
 end
 
 # Top-level colour generators
