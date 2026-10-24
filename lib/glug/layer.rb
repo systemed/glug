@@ -17,23 +17,24 @@ module Glug # :nodoc:
                    text_pitch_alignment text_rotation_alignment text_field text_font text_size text_max_width text_line_height
                    text_letter_spacing text_justify text_radial_offset text_variable_anchor text_variable_anchor_offset
                    text_anchor text_max_angle text_writing_mode text_rotate text_padding
+                   fill_extrusion_rounded_corner_distance
                    text_keep_upright text_transform text_offset text_allow_overlap text_overlap text_ignore_placement text_optional].freeze
     PAINT     = %i[background_color background_pattern background_opacity
-                   fill_antialias fill_opacity fill_color fill_outline_color fill_translate fill_translate_anchor fill_pattern
+                   fill_antialias fill_opacity fill_color fill_outline_color fill_translate fill_translate_anchor fill_pattern fill_layer_opacity
                    circle_radius circle_color circle_blur circle_opacity circle_translate circle_translate_anchor
                    circle_pitch_scale circle_pitch_alignment circle_stroke_width circle_stroke_color circle_stroke_opacity
                    heatmap_radius heatmap_weight heatmap_intensity heatmap_color heatmap_opacity
                    fill_extrusion_opacity fill_extrusion_color fill_extrusion_translate fill_extrusion_translate_anchor
                    fill_extrusion_pattern fill_extrusion_height fill_extrusion_base fill_extrusion_vertical_gradient
                    line_opacity line_color line_translate line_translate_anchor line_width line_gap_width line_offset
-                   line_blur line_dasharray line_pattern line_gradient
+                   line_blur line_dasharray line_pattern line_gradient line_layer_opacity
                    icon_opacity icon_color icon_halo_color icon_halo_width icon_halo_blur icon_translate icon_translate_anchor
                    text_opacity text_color text_halo_color text_halo_width text_halo_blur text_translate text_translate_anchor
                    raster_opacity raster_hue_rotate raster_brightness_min raster_brightness_max
                    raster_saturation raster_contrast raster_resampling raster_fade_duration
                    hillshade_illumination_direction hillshade_illumination_direction hillshade_illumination_altitude hillshade_illumination_anchor
                    hillshade_exaggeration hillshade_shadow_color hillshade_highlight_color hillshade_accent_color hillshade_method
-                   color_relief_opacity color_relief_color].freeze
+                   color_relief_opacity color_relief_color resampling].freeze
     TOP_LEVEL = %i[metadata zoom interactive].freeze
     HIDDEN    = %i[source source_layer id type filter layout paint].freeze	# top level, not settable by commands
     EXPRESSIONS = [:let, :var,
@@ -237,7 +238,9 @@ module Glug # :nodoc:
     def set_type_from(property)
       return unless property.include?('-')
 
-      new_type = (/^fill-extrusion/.match?(property) ? 'fill-extrusion' : property.split('-')[0]).to_sym
+      new_type = (/^fill-extrusion/.match?(property) ? 'fill-extrusion' : 
+                  /^color-relief/.match?(property) ? 'color-relief' : 
+                  property.split('-')[0]).to_sym
       new_type = :symbol if %i[icon text].include?(new_type)
       if @type && @type != new_type
         raise "Attribute #{property} conflicts with deduced type #{@type} in layer #{@kv[:id]}"
