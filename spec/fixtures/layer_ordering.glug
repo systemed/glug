@@ -1,0 +1,30 @@
+version 8
+name 'My first stylesheet'
+source :shortbread, type: 'vector', url: 'https://vector.openstreetmap.org/shortbread_v1/tilejson.json'
+
+layer_order([
+  :first,
+  :second,
+  "third",
+  :nonexistant
+])
+
+# layer with symbol name
+layer(:first, source: :shortbread) do
+  line_color 0x998877
+end
+
+# layer with symbol name, but string in ordering
+layer(:third, source: :shortbread) do
+  line_color 0x998877
+end
+
+# layer with string name, but symbol in ordering
+layer("second", source: :shortbread) do
+  line_color 0x998877
+end
+
+# layer that doesn't appear in ordering, and so not in output
+layer(:unused, source: :shortbread) do
+  line_color 0x998877
+end

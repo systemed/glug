@@ -9,6 +9,7 @@ module Glug
       @sources = {}
       @kv = {}
       @layers = []
+      @layer_order = nil
       @base_dir = base_dir || ''
       @params = params || {}
       @dsl = StylesheetDSL.new(self)
@@ -23,6 +24,10 @@ module Glug
     # Add a source
     def source(source_name, opts = {})
       @sources[source_name] = opts
+    end
+
+    def layer_order(order)
+      @layer_order = order
     end
 
     # Add a layer
@@ -41,7 +46,7 @@ module Glug
         v.delete(:default)
         out['sources'][k] = v
       end
-      out['layers'] = @layers.select(&:write?).collect(&:to_hash).compact
+      out['layers'] = ordered_layers.collect(&:to_hash).compact
       out
     end
 
@@ -57,6 +62,45 @@ module Glug
     # Load file
     def include_file(filename)
       @dsl.instance_eval(File.read(File.join(@base_dir, filename)))
+    end
+
+    private
+
+    def ordered_layers
+      writable = @layers.select(&:write?)
+      return writable unless @layer_order
+
+      order_strings = @layer_order.map(&:to_s)
+
+      # Include sublayers automatically if parent layer is included
+      groups = Hash.new { |h, k| h[k] = [] }
+      writable.each do |layer|
+        lid = layer.kv[:id].to_s
+        group = find_order_group(lid, order_strings)
+        groups[group] << layer if group
+      end
+
+      order_strings.flat_map { |entry| groups[entry] || [] }
+    end
+
+    def find_order_group(layer_id, order_strings)
+      return layer_id if order_strings.include?(layer_id)
+
+      # Find the longest order entry that is a prefix of this layer's ID
+      best = nil
+      order_strings.each do |entry|
+        best = entry if layer_id.start_with?("#{entry}__") && (best.nil? || entry.length > best.length)
+      end
+
+      # If a parent matched, only auto-include when no sibling sublayer
+      # is explicitly in the order (explicit reference opts into manual control)
+      if best
+        order_strings.each do |entry|
+          return nil if entry.start_with?("#{best}__")
+        end
+      end
+
+      best
     end
   end
 end
