@@ -1,0 +1,16 @@
+version 8
+source :shortbread, type: 'vector', url: 'https://example.com/tiles.json'
+
+layer_order([:roads])
+
+# If the sublayers aren't explicitly referred to in the layer_order
+# then they are included automatically
+layer(:roads, source: :shortbread) do
+  line_color 0x998877
+  on(5..10) do
+    line_width 2
+  end
+  on(10..15) do
+    line_width 4
+  end
+end

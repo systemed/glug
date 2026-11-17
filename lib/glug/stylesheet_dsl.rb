@@ -19,6 +19,10 @@ module Glug
       @__impl.include_file(filename)
     end
 
+    def layer_order(order)
+      @__impl.layer_order(order)
+    end
+
     # Arbitrary properties can be defined, e.g. "foo :bar" results in a top-level "foo":"bar" in the style
     def respond_to_missing?(*)
       true

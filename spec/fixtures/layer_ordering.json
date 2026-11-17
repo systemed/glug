@@ -1,0 +1,33 @@
+{
+  "version":8,
+  "name":"My first stylesheet",
+  "sources":{
+    "shortbread":{
+      "type":"vector",
+      "url":"https://vector.openstreetmap.org/shortbread_v1/tilejson.json"
+    }
+  },
+  "layers":[
+    {
+      "paint":{"line-color":"#998877"},
+      "source":"shortbread",
+      "id":"first",
+      "source-layer":"first",
+      "type":"line"
+    },
+    {
+      "paint":{"line-color":"#998877"},
+      "source":"shortbread",
+      "id":"second",
+      "source-layer":"second",
+      "type":"line"
+    },
+    {
+      "paint":{"line-color":"#998877"},
+      "source":"shortbread",
+      "id":"third",
+      "source-layer":"third",
+      "type":"line"
+    }
+  ]
+}
