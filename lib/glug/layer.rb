@@ -238,9 +238,13 @@ module Glug # :nodoc:
     def set_type_from(property)
       return unless property.include?('-')
 
-      new_type = (/^fill-extrusion/.match?(property) ? 'fill-extrusion' : 
-                  /^color-relief/.match?(property) ? 'color-relief' : 
-                  property.split('-')[0]).to_sym
+      new_type = (if /^fill-extrusion/.match?(property)
+                    'fill-extrusion'
+                  elsif /^color-relief/.match?(property)
+                    'color-relief'
+                  else
+                    property.split('-')[0]
+                  end).to_sym
       new_type = :symbol if %i[icon text].include?(new_type)
       if @type && @type != new_type
         raise "Attribute #{property} conflicts with deduced type #{@type} in layer #{@kv[:id]}"
